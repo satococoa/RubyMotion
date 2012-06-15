@@ -61,11 +61,11 @@ end
 desc "Run the simulator"
 task :simulator => ['build:simulator'] do
   app = App.config.app_bundle('iPhoneSimulator')
-  target = ENV['target'] || App.config.deployment_target
+  deployment_target = ENV['deployment_target'] || App.config.deployment_target
 
   # Cleanup the simulator application sandbox, to avoid having old resource files there.
   if ENV['clean']
-    sim_apps = File.expand_path("~/Library/Application Support/iPhone Simulator/#{target}/Applications")
+    sim_apps = File.expand_path("~/Library/Application Support/iPhone Simulator/#{deployment_target}/Applications")
     Dir.glob("#{sim_apps}/**/*.app").each do |app_bundle|
       if File.basename(app_bundle) == File.basename(app)
         rm_rf File.dirname(app_bundle)
@@ -95,7 +95,7 @@ task :simulator => ['build:simulator'] do
   debug = 2 if debug < 0 or debug > 2
   App.info 'Simulate', app
   at_exit { system("stty echo") } # Just in case the simulator launcher crashes and leaves the terminal without echo.
-  sh "#{env} #{sim} #{debug} #{family_int} #{target} \"#{xcode}\" \"#{app}\""
+  sh "#{env} #{sim} #{debug} #{family_int} #{deployment_target} \"#{xcode}\" \"#{app}\""
 end
 
 desc "Create archives for everything"
